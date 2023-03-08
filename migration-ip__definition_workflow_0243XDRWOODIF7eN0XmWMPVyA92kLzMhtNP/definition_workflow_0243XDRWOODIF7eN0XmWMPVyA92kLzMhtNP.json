@@ -9,7 +9,7 @@
       {
         "schema_id": "datatype.string",
         "properties": {
-          "value": "{\n  \"address\": \"1.2.3.4\",\n  \"mask\" : \"255.255.255.224\" ",
+          "value": "{\n  \"address\": \"1.2.3.4\",\n  \"mask\" : \"255.255.255.224\" \n}",
           "scope": "local",
           "name": "new_ip",
           "type": "datatype.string",
@@ -128,7 +128,7 @@
                   "action_timeout": 180,
                   "continue_on_failure": false,
                   "display_name": "Create new Configuration",
-                  "script": "import sys, json\nnew_ip = json.loads(sys.argv[2])\nold_ip = json.loads(sys.argv[1])\n\n\nold_cfg=old_ip[\"primary\"] \nold_cfg[\"secondary\"] = \"[null]\"\n\naddress=new_ip[\"address\"]\nmask = new_ip[\"mask\"]\n\nnew_cfg = f\"\"\"\n{{\n   \"secondary\": \n    [ \n       {{\n         {old_cfg},\n       }} \n    ], \n  \"primary\":  \n   {{\n     \"address\": \"{address}\",\n     \"mask\": \"  \"{mask}\"\n   }}  \n}}\n\"\"\"",
+                  "script": "import sys, json\nnew_ip = json.loads(sys.argv[2])\nold_ip = json.loads(sys.argv[1])\n\n\nold_cfg=old_ip[\"primary\"] \nold_cfg[\"secondary\"] = []\n\naddress=new_ip[\"address\"]\nmask = new_ip[\"mask\"]\n\nnew_cfg = f\"\"\"\n{{\n  \"address\": {{\n   \"secondary\": \n    [ \n       \"address\":   {old_cfg[\"address\"]},\n       \"mask\":     {old_cfg[\"mask\"]},\n       \"secondary\": [null]\n    ], \n  \"primary\":  \n   {{\n     \"address\": \"{address}\",\n     \"mask\":    \"{mask}\"\n   }}  \n  }}\n}}\n\"\"\"",
                   "script_arguments": [
                     "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_cfg$",
                     "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0243YBLFMHUYZ7ELs6HU5U28gxbSW5jUUK6$"
@@ -141,6 +141,59 @@
                     }
                   ],
                   "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_0243Z45TNL0321Y4QqSCmKhnnnA6X0eWAi2",
+                "name": "Replace String",
+                "title": "Replace String",
+                "type": "core.replacestring",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Replace String",
+                  "input_string": "$activity.definition_activity_0243Y3MVVDWAY7Odg9ZPQJJFCk3PGf1ESLZ.output.script_queries.cfg$",
+                  "replace_list": [
+                    {
+                      "replaced_string": "'",
+                      "replacement_string": "\""
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_0243Z15HDYAZY2R6n3bwFV1y87U7lIgZnNg",
+                "name": "HTTP Request",
+                "title": "Push new interface configuration",
+                "type": "web-service.http_request",
+                "base_type": "activity",
+                "properties": {
+                  "accept": "application/yang-data+json",
+                  "action_timeout": 180,
+                  "allow_auto_redirect": true,
+                  "allow_headers_redirect": false,
+                  "body": "$activity.definition_activity_0243Z45TNL0321Y4QqSCmKhnnnA6X0eWAi2.output.result_string$",
+                  "continue_on_error_status_code": false,
+                  "continue_on_failure": false,
+                  "custom_headers": [
+                    {
+                      "name": "Content-Type",
+                      "value": "application/yang-data+json"
+                    }
+                  ],
+                  "display_name": "Push new interface configuration",
+                  "method": "PUT",
+                  "relative_url": "restconf/data/native/interface/GigabitEthernet=2.24/ip/address",
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "use_workflow_target": true
+                  }
                 },
                 "object_type": "definition_activity"
               }
