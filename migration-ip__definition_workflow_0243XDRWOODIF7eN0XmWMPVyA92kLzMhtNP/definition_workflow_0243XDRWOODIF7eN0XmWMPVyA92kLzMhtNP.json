@@ -128,10 +128,17 @@
                   "action_timeout": 180,
                   "continue_on_failure": false,
                   "display_name": "Create new Configuration",
-                  "script": "import sys, json\nnew_ip = json.loads(sys.argv[2])\n\nnew_cfg = '{' +\n   \"secondary\": [ { ' +\n       sys.argv[1] + \n  '    \"secondary\": [null] } ], ' +\n  '\"primary\":  { ' +\n      '\"address\": \"' +   new_ip[\"address\"] +  '\" ,' +\n      '\"mask\": \"'   + new_ip[\"mask\"] + '\"' +\n   '}  }'\n           ",
+                  "script": "import sys, json\nnew_ip = json.loads(sys.argv[2])\nold_ip = json.loads(sys.argv[1])\n\n\nold_cfg=old_ip[\"primary\"] \nold_cfg[\"secondary\"] = \"[null]\"\n\naddress=new_ip[\"address\"]\nmask = new_ip[\"mask\"]\n\nnew_cfg = f\"\"\"\n{{\n   \"secondary\": \n    [ \n       {{\n         {old_cfg},\n       }} \n    ], \n  \"primary\":  \n   {{\n     \"address\": \"{address}\",\n     \"mask\": \"  \"{mask}\"\n   }}  \n}}\n\"\"\"",
                   "script_arguments": [
                     "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_cfg$",
                     "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0243YBLFMHUYZ7ELs6HU5U28gxbSW5jUUK6$"
+                  ],
+                  "script_queries": [
+                    {
+                      "script_query": "new_cfg",
+                      "script_query_name": "cfg",
+                      "script_query_type": "string"
+                    }
                   ],
                   "skip_execution": false
                 },
