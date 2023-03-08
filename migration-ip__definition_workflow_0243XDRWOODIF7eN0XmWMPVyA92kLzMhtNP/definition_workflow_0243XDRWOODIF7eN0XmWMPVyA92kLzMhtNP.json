@@ -5,7 +5,21 @@
     "title": "ark - demo Comity Design",
     "type": "generic.workflow",
     "base_type": "workflow",
-    "variables": null,
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "{\n  \"address\": \"1.2.3.4\",\n  \"mask\" : \"255.255.255.224\" ",
+          "scope": "local",
+          "name": "new_ip",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_0243YBLFMHUYZ7ELs6HU5U28gxbSW5jUUK6",
+        "object_type": "variable_workflow"
+      }
+    ],
     "properties": {
       "atomic": {
         "is_atomic": false
@@ -49,6 +63,101 @@
           }
         },
         "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7",
+        "name": "JSONPath Query",
+        "title": "Get interface 2.24",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": true,
+          "display_name": "Get interface 2.24",
+          "input_json": "$activity.definition_activity_0243XKRF8KYPZ6wlBZfYPAMNwsyZFEbVz1S.output.response_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.Cisco-IOS-XE-native:interface.GigabitEthernet[?(@.name==\"2.24\")].ip.address",
+              "jsonpath_query_name": "old_cfg",
+              "jsonpath_query_type": "string",
+              "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_0243Y2QP4NCA375JEFq9hr8DftD2Sy08VVZ",
+        "name": "Condition Block",
+        "title": "interface 2.24 found ?",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "interface 2.24 found ?",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_0243Y2QPE3NZS1q8EFdUGl1Egp8UTntaHBK",
+            "name": "Condition Branch",
+            "title": "Yes",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.succeeded$",
+                "operator": "eq",
+                "right_operand": true
+              },
+              "continue_on_failure": false,
+              "display_name": "Yes",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_0243Y3MVVDWAY7Odg9ZPQJJFCk3PGf1ESLZ",
+                "name": "Execute Python Script",
+                "title": "Create new Configuration",
+                "type": "python3.script",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "Create new Configuration",
+                  "script": "import sys, json\nnew_ip = json.loads(sys.argv[2])\n\nnew_cfg = '{' +\n   \"secondary\": [ { ' +\n       sys.argv[1] + \n  '    \"secondary\": [null] } ], ' +\n  '\"primary\":  { ' +\n      '\"address\": \"' +   new_ip[\"address\"] +  '\" ,' +\n      '\"mask\": \"'   + new_ip[\"mask\"] + '\"' +\n   '}  }'\n           ",
+                  "script_arguments": [
+                    "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_cfg$",
+                    "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0243YBLFMHUYZ7ELs6HU5U28gxbSW5jUUK6$"
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_0243Y2QPOOD0G1TGU0g6labnIWSq26MPOUB",
+            "name": "Condition Branch",
+            "title": "No",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.succeeded$",
+                "operator": "eq",
+                "right_operand": false
+              },
+              "continue_on_failure": false,
+              "display_name": "No",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          }
+        ]
       }
     ],
     "categories": [
