@@ -9,14 +9,14 @@
       {
         "schema_id": "datatype.string",
         "properties": {
-          "value": "{\n  \"address\": \"1.2.3.4\",\n  \"mask\" : \"255.255.255.224\" \n}",
+          "value": "",
           "scope": "local",
-          "name": "new_ip",
+          "name": "matching table",
           "type": "datatype.string",
           "is_required": false,
           "is_invisible": false
         },
-        "unique_name": "variable_workflow_0243YBLFMHUYZ7ELs6HU5U28gxbSW5jUUK6",
+        "unique_name": "variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4",
         "object_type": "variable_workflow"
       }
     ],
@@ -38,35 +38,128 @@
     "object_type": "definition_workflow",
     "actions": [
       {
-        "unique_name": "definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk",
-        "name": "Read Table from Text",
-        "title": "Read old-new matching",
-        "type": "core.read_table_from_text",
+        "unique_name": "definition_activity_0244U04LCT5G71VtfDKrtIiNtkOiTcvY5DS",
+        "name": "Condition Block",
+        "title": "Start from webHook ?",
+        "type": "logic.if_else",
         "base_type": "activity",
         "properties": {
           "continue_on_failure": false,
-          "delimiters": [
-            {
-              "delimiter": ";"
-            }
-          ],
-          "display_name": "Read old-new matching",
-          "input_text": "172.10.10.1;10.1.67.1\n172.20.10.1;10.1.68.1\n172.22.10.1;10.1.69.1",
-          "persist_output": false,
-          "populate_columns": false,
-          "skip_execution": false,
-          "table_columns": [
-            {
-              "column_name": "old_ip",
-              "column_type": "string"
-            },
-            {
-              "column_name": "new_ip",
-              "column_type": "string"
-            }
-          ]
+          "display_name": "Start from webHook ?",
+          "skip_execution": false
         },
-        "object_type": "definition_activity"
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_0244U04LMZOQW0whwTuFxCEPUMtQlEss3BA",
+            "name": "Condition Branch",
+            "title": "Yes",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$trigger.triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn.common.name$",
+                "operator": "eq",
+                "right_operand": "\"ark:webhhook\""
+              },
+              "continue_on_failure": true,
+              "display_name": "Yes",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c",
+                "name": "Set Variables",
+                "title": "Set matching ip from webhooks data ",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Set matching ip from webhooks data ",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
+                      "variable_value_new": "$trigger.triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn.output.request_body$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_0244U04LVHVBQ3BhLKxBBklQMf9hJYkztLq",
+            "name": "Condition Branch",
+            "title": "No",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
+                "operator": "ne",
+                "right_operand": "\"\""
+              },
+              "continue_on_failure": true,
+              "display_name": "No",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk",
+                "name": "Read Table from Text",
+                "title": "Read old-new matching",
+                "type": "core.read_table_from_text",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "delimiters": [
+                    {
+                      "delimiter": ";"
+                    }
+                  ],
+                  "display_name": "Read old-new matching",
+                  "input_text": "172.10.10.1;10.1.67.1\n172.20.10.1;10.1.68.1\n172.22.10.1;10.1.69.1",
+                  "persist_output": false,
+                  "populate_columns": false,
+                  "skip_execution": false,
+                  "table_columns": [
+                    {
+                      "column_name": "old_ip",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "new_ip",
+                      "column_type": "string"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_0244VAIX38W5M65WbXNbmoyEFwXL60J0IWe",
+                "name": "Set Variables",
+                "title": "Set matching ip",
+                "type": "core.set_multiple_variables",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Set matching ip",
+                  "skip_execution": false,
+                  "variables_to_update": [
+                    {
+                      "variable_to_update": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
+                      "variable_value_new": "$activity.Read old-new matching.output$"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
       },
       {
         "unique_name": "definition_activity_0243XKRF8KYPZ6wlBZfYPAMNwsyZFEbVz1S",
@@ -130,7 +223,7 @@
           "display_name": "Get New IP",
           "script": "import sys,json\nnew_ip=\"\"\nmatchings=json.loads(sys.argv[1])\npresent_ip = json.loads(sys.argv[2])[\"primary\"][\"address\"]\nprint(matchings)\nfor m in matchings:\n   print (m)\n   if m[\"old_ip\"]==present_ip:\n      new_ip=m[\"new_ip\"]\n# not found ?\nif new_ip==\"\":\n   sys.exit(-1)\n",
           "script_arguments": [
-            "$activity.definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk.output.response_body$",
+            "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
             "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_ip$"
           ],
           "script_queries": [
@@ -227,7 +320,7 @@
                     }
                   ],
                   "display_name": "Push new interface configuration",
-                  "method": "PUT",
+                  "method": "PATCH",
                   "relative_url": "restconf/data/native/interface/GigabitEthernet=2.24/ip/address/primary",
                   "runtime_user": {
                     "target_default": true
@@ -362,6 +455,38 @@
       "object_type": "category"
     }
   },
+  "triggers": {
+    "triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn": {
+      "workflow_id": "definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP",
+      "name": "ark: webhhook",
+      "title": "",
+      "lowercase_name": "event.ark:_webhhook",
+      "type": "event",
+      "base_type": "trigger",
+      "ref_id": "event_webhook_0244TZRENKIML41QpCDgS4EflPSDKPCRRaE",
+      "version": "1.0.0",
+      "disabled": false,
+      "unique_name": "triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn",
+      "object_type": "triggerevent"
+    }
+  },
+  "events": {
+    "event_webhook_0244TZRENKIML41QpCDgS4EflPSDKPCRRaE": {
+      "name": "ark: start CD demo",
+      "title": "ark: start CD demo",
+      "type": "webhook.event",
+      "base_type": "event",
+      "object_type": "event_webhook",
+      "target_id": "",
+      "webhook_id": "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz",
+      "version": "1.0.0",
+      "properties": {
+        "title": "ark: start CD demo",
+        "webhook_id": "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz"
+      },
+      "unique_name": "event_webhook_0244TZRENKIML41QpCDgS4EflPSDKPCRRaE"
+    }
+  },
   "targets": {
     "definition_target_0243XCYCOODT47A2dcMXr2ClE30C93yAr1T": {
       "unique_name": "definition_target_0243XCYCOODT47A2dcMXr2ClE30C93yAr1T",
@@ -425,6 +550,21 @@
         "password": "*****",
         "sender": "ark@vfemail.net"
       }
+    }
+  },
+  "webhooks": {
+    "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz": {
+      "name": "ark: CD webhook",
+      "title": "ark: CD webhook",
+      "type": "generic.webhook",
+      "base_type": "webhook",
+      "object_type": "webhook",
+      "version": "1.0.0",
+      "properties": {
+        "display_name": "ark: CD webhook",
+        "request_content_type": "application/json"
+      },
+      "unique_name": "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz"
     }
   }
 }
