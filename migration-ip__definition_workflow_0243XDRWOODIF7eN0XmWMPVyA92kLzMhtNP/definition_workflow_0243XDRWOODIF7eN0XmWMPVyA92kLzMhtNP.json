@@ -69,6 +69,25 @@
         "object_type": "definition_activity"
       },
       {
+        "unique_name": "definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c",
+        "name": "Set Variables",
+        "title": "Set matching ip from webhooks data ",
+        "type": "core.set_multiple_variables",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": true,
+          "display_name": "Set matching ip from webhooks data ",
+          "skip_execution": false,
+          "variables_to_update": [
+            {
+              "variable_to_update": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
+              "variable_value_new": "$trigger.triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn.output.request_body$"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
         "unique_name": "definition_activity_0244U04LCT5G71VtfDKrtIiNtkOiTcvY5DS",
         "name": "Condition Block",
         "title": "Start from webHook ?",
@@ -89,9 +108,9 @@
             "base_type": "activity",
             "properties": {
               "condition": {
-                "left_operand": "$trigger.triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn.common.name$",
+                "left_operand": "$activity.definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c.output.succeeded$",
                 "operator": "eq",
-                "right_operand": "ark: webhhook"
+                "right_operand": true
               },
               "continue_on_failure": true,
               "display_name": "Yes",
@@ -100,21 +119,16 @@
             "object_type": "definition_activity",
             "actions": [
               {
-                "unique_name": "definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c",
-                "name": "Set Variables",
-                "title": "Set matching ip from webhooks data ",
-                "type": "core.set_multiple_variables",
+                "unique_name": "definition_activity_0244YADC96P0104v72smvrIcApC5gERXTy6",
+                "name": "Sleep",
+                "title": "Sleep",
+                "type": "core.sleep",
                 "base_type": "activity",
                 "properties": {
                   "continue_on_failure": false,
-                  "display_name": "Set matching ip from webhooks data ",
+                  "display_name": "Sleep",
                   "skip_execution": false,
-                  "variables_to_update": [
-                    {
-                      "variable_to_update": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
-                      "variable_value_new": "$trigger.triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn.output.request_body$"
-                    }
-                  ]
+                  "sleep_interval": 1
                 },
                 "object_type": "definition_activity"
               }
@@ -128,9 +142,9 @@
             "base_type": "activity",
             "properties": {
               "condition": {
-                "left_operand": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
-                "operator": "ne",
-                "right_operand": "\"\""
+                "left_operand": "$activity.definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c.output.succeeded$",
+                "operator": "eq",
+                "right_operand": false
               },
               "continue_on_failure": true,
               "display_name": "No",
