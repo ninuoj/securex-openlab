@@ -38,6 +38,37 @@
     "object_type": "definition_workflow",
     "actions": [
       {
+        "unique_name": "definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk",
+        "name": "Read Table from Text",
+        "title": "Read old-new matching",
+        "type": "core.read_table_from_text",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "delimiters": [
+            {
+              "delimiter": ";"
+            }
+          ],
+          "display_name": "Read old-new matching",
+          "input_text": "172.10.10.1;10.1.67.1\n172.20.10.1;10.1.68.1\n172.22.10.1;10.1.69.1",
+          "persist_output": false,
+          "populate_columns": false,
+          "skip_execution": false,
+          "table_columns": [
+            {
+              "column_name": "old_ip",
+              "column_type": "string"
+            },
+            {
+              "column_name": "new_ip",
+              "column_type": "string"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
         "unique_name": "definition_activity_0243XKRF8KYPZ6wlBZfYPAMNwsyZFEbVz1S",
         "name": "HTTP Request",
         "title": "get Interfaces List from native RESTCONF API",
@@ -88,6 +119,32 @@
         "object_type": "definition_activity"
       },
       {
+        "unique_name": "definition_activity_0243Y3MVVDWAY7Odg9ZPQJJFCk3PGf1ESLZ",
+        "name": "Execute Python Script",
+        "title": "Get New IP",
+        "type": "python3.script",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Get New IP",
+          "script": "import sys,json\nmatchings=json.loads(sys.argv[1])[0]\npresent_ip = json.loads(sys.argv[2])[\"primay\"][\"address\"]\nfor old_ip in matchings:\n   new_ip=matching[old_ip] if old_ip==present_ip\n",
+          "script_arguments": [
+            "$activity.definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk.output.response_body$",
+            "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_cfg$"
+          ],
+          "script_queries": [
+            {
+              "script_query": "new_ip",
+              "script_query_name": "new_ip_address",
+              "script_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
         "unique_name": "definition_activity_0243Y2QP4NCA375JEFq9hr8DftD2Sy08VVZ",
         "name": "Condition Block",
         "title": "interface 2.24 found ?",
@@ -119,52 +176,6 @@
             "object_type": "definition_activity",
             "actions": [
               {
-                "unique_name": "definition_activity_0243Y3MVVDWAY7Odg9ZPQJJFCk3PGf1ESLZ",
-                "name": "Execute Python Script",
-                "title": "Create new Configuration",
-                "type": "python3.script",
-                "base_type": "activity",
-                "properties": {
-                  "action_timeout": 180,
-                  "continue_on_failure": false,
-                  "display_name": "Create new Configuration",
-                  "script": "import sys, json\nnew_ip = json.loads(sys.argv[2])\nold_ip = json.loads(sys.argv[1])\n\n\nold_cfg=old_ip[\"primary\"] \nold_cfg[\"secondary\"] = []\n\naddress=new_ip[\"address\"]\nmask = new_ip[\"mask\"]\n\nnew_cfg = f\"\"\"\n{{\n  \"address\": {{\n   \"secondary\": \n    [ {\n       \"address\":   \"{old_cfg['address']}\",\n       \"mask\":      \"{old_cfg['mask']}\",\n       \"secondary\": [null]\n    } ], \n  \"primary\":  \n   {{\n     \"address\": \"{address}\",\n     \"mask\":    \"{mask}\"\n   }}  \n  }}\n}}\n\"\"\"",
-                  "script_arguments": [
-                    "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_cfg$",
-                    "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0243YBLFMHUYZ7ELs6HU5U28gxbSW5jUUK6$"
-                  ],
-                  "script_queries": [
-                    {
-                      "script_query": "new_cfg",
-                      "script_query_name": "cfg",
-                      "script_query_type": "string"
-                    }
-                  ],
-                  "skip_execution": false
-                },
-                "object_type": "definition_activity"
-              },
-              {
-                "unique_name": "definition_activity_0243Z45TNL0321Y4QqSCmKhnnnA6X0eWAi2",
-                "name": "Replace String",
-                "title": "Replace String",
-                "type": "core.replacestring",
-                "base_type": "activity",
-                "properties": {
-                  "continue_on_failure": false,
-                  "display_name": "Replace String",
-                  "input_string": "$activity.definition_activity_0243Y3MVVDWAY7Odg9ZPQJJFCk3PGf1ESLZ.output.script_queries.cfg$",
-                  "replace_list": [
-                    {
-                      "replaced_string": "'",
-                      "replacement_string": "\""
-                    }
-                  ],
-                  "skip_execution": false
-                },
-                "object_type": "definition_activity"
-              },
-              {
                 "unique_name": "definition_activity_0243Z15HDYAZY2R6n3bwFV1y87U7lIgZnNg",
                 "name": "HTTP Request",
                 "title": "Push new interface configuration",
@@ -175,7 +186,6 @@
                   "action_timeout": 180,
                   "allow_auto_redirect": true,
                   "allow_headers_redirect": false,
-                  "body": "$activity.definition_activity_0243Z45TNL0321Y4QqSCmKhnnnA6X0eWAi2.output.result_string$",
                   "continue_on_error_status_code": false,
                   "continue_on_failure": false,
                   "custom_headers": [
