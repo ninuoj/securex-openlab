@@ -128,7 +128,7 @@
           "action_timeout": 180,
           "continue_on_failure": false,
           "display_name": "Get New IP",
-          "script": "import sys,json\nmatchings=json.loads(sys.argv[1])[0]\npresent_ip = json.loads(sys.argv[2])[\"primay\"][\"address\"]\nfor old_ip in matchings:\n   new_ip=matching[old_ip] if old_ip==present_ip\n",
+          "script": "import sys,json\nmatchings=json.loads(sys.argv[1])[0]\npresent_ip = json.loads(sys.argv[2])[\"primay\"][\"address\"]\nfor old_ip in matchings:\n   if old_ip==present_ip:\n      new_ip=matchings[old_ip]\n",
           "script_arguments": [
             "$activity.definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk.output.response_body$",
             "$activity.definition_activity_0243Y1FNCW4LP3cciF9EtztJgEqT1zm0KB7.output.jsonpath_queries.old_cfg$"
