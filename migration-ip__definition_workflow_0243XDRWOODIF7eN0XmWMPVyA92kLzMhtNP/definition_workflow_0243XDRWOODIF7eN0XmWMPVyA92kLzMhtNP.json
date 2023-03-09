@@ -38,6 +38,37 @@
     "object_type": "definition_workflow",
     "actions": [
       {
+        "unique_name": "definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk",
+        "name": "Read Table from Text",
+        "title": "Read old-new matching",
+        "type": "core.read_table_from_text",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "delimiters": [
+            {
+              "delimiter": ";"
+            }
+          ],
+          "display_name": "Read old-new matching",
+          "input_text": "172.10.10.1;10.1.67.1\n172.20.10.1;10.1.68.1\n172.22.10.1;10.1.69.1",
+          "persist_output": false,
+          "populate_columns": false,
+          "skip_execution": false,
+          "table_columns": [
+            {
+              "column_name": "old_ip",
+              "column_type": "string"
+            },
+            {
+              "column_name": "new_ip",
+              "column_type": "string"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
         "unique_name": "definition_activity_0244U04LCT5G71VtfDKrtIiNtkOiTcvY5DS",
         "name": "Condition Block",
         "title": "Start from webHook ?",
@@ -60,7 +91,7 @@
               "condition": {
                 "left_operand": "$trigger.triggerevent_0244U2MIM4LOP1yDqs44uUr0Rk7OP82Mvcn.common.name$",
                 "operator": "eq",
-                "right_operand": "\"ark:webhhook\""
+                "right_operand": "ark: webhhook"
               },
               "continue_on_failure": true,
               "display_name": "Yes",
@@ -108,37 +139,6 @@
             "object_type": "definition_activity",
             "actions": [
               {
-                "unique_name": "definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk",
-                "name": "Read Table from Text",
-                "title": "Read old-new matching",
-                "type": "core.read_table_from_text",
-                "base_type": "activity",
-                "properties": {
-                  "continue_on_failure": false,
-                  "delimiters": [
-                    {
-                      "delimiter": ";"
-                    }
-                  ],
-                  "display_name": "Read old-new matching",
-                  "input_text": "172.10.10.1;10.1.67.1\n172.20.10.1;10.1.68.1\n172.22.10.1;10.1.69.1",
-                  "persist_output": false,
-                  "populate_columns": false,
-                  "skip_execution": false,
-                  "table_columns": [
-                    {
-                      "column_name": "old_ip",
-                      "column_type": "string"
-                    },
-                    {
-                      "column_name": "new_ip",
-                      "column_type": "string"
-                    }
-                  ]
-                },
-                "object_type": "definition_activity"
-              },
-              {
                 "unique_name": "definition_activity_0244VAIX38W5M65WbXNbmoyEFwXL60J0IWe",
                 "name": "Set Variables",
                 "title": "Set matching ip",
@@ -151,7 +151,7 @@
                   "variables_to_update": [
                     {
                       "variable_to_update": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.local.variable_workflow_0244V9S1KZE5X40pTDo5W2WFKqP2f8QTlS4$",
-                      "variable_value_new": "$activity.Read old-new matching.output$"
+                      "variable_value_new": "$activity.definition_activity_0244RH8CTRR9B31GKc80bHSmppWIpJD3hYk.output.response_body$"
                     }
                   ]
                 },
