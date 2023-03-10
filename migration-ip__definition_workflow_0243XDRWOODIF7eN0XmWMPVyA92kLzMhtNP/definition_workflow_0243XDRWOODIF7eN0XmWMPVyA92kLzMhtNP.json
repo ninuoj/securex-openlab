@@ -108,11 +108,11 @@
             "base_type": "activity",
             "properties": {
               "condition": {
-                "left_operand": "$activity.definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c.output.succeeded$",
+                "left_operand": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.output.started_by$",
                 "operator": "eq",
-                "right_operand": true
+                "right_operand": "me"
               },
-              "continue_on_failure": true,
+              "continue_on_failure": false,
               "display_name": "Yes",
               "skip_execution": false
             },
@@ -142,9 +142,9 @@
             "base_type": "activity",
             "properties": {
               "condition": {
-                "left_operand": "$activity.definition_activity_0244WO18ZQBZB6vgKHLqXGXspnOiAeUVU3c.output.succeeded$",
-                "operator": "eq",
-                "right_operand": false
+                "left_operand": "$workflow.definition_workflow_0243XDRWOODIF7eN0XmWMPVyA92kLzMhtNP.output.started_by$",
+                "operator": "ne",
+                "right_operand": "me"
               },
               "continue_on_failure": true,
               "display_name": "No",
