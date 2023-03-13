@@ -371,38 +371,6 @@
       "object_type": "category"
     }
   },
-  "triggers": {
-    "triggerevent_02487QUP9938V7Yqrf6iZcU8fn72bbk0A0K": {
-      "workflow_id": "definition_workflow_02487QUN36WHX5lMAhh18aRieZU2MPAc4A0",
-      "name": "ark: webhhook",
-      "title": "",
-      "lowercase_name": "event.ark:_webhhook",
-      "type": "event",
-      "base_type": "trigger",
-      "ref_id": "event_webhook_0244TZRENKIML41QpCDgS4EflPSDKPCRRaE",
-      "version": "1.0.0",
-      "disabled": false,
-      "unique_name": "triggerevent_02487QUP9938V7Yqrf6iZcU8fn72bbk0A0K",
-      "object_type": "triggerevent"
-    }
-  },
-  "events": {
-    "event_webhook_0244TZRENKIML41QpCDgS4EflPSDKPCRRaE": {
-      "name": "ark: start CD demo",
-      "title": "ark: start CD demo",
-      "type": "webhook.event",
-      "base_type": "event",
-      "object_type": "event_webhook",
-      "target_id": "",
-      "webhook_id": "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz",
-      "version": "1.0.0",
-      "properties": {
-        "title": "ark: start CD demo",
-        "webhook_id": "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz"
-      },
-      "unique_name": "event_webhook_0244TZRENKIML41QpCDgS4EflPSDKPCRRaE"
-    }
-  },
   "targets": {
     "definition_target_0243XCYCOODT47A2dcMXr2ClE30C93yAr1T": {
       "unique_name": "definition_target_0243XCYCOODT47A2dcMXr2ClE30C93yAr1T",
@@ -466,21 +434,6 @@
         "password": "*****",
         "sender": "ark@vfemail.net"
       }
-    }
-  },
-  "webhooks": {
-    "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz": {
-      "name": "ark: CD webhook",
-      "title": "ark: CD webhook",
-      "type": "generic.webhook",
-      "base_type": "webhook",
-      "object_type": "webhook",
-      "version": "1.0.0",
-      "properties": {
-        "display_name": "ark: CD webhook",
-        "request_content_type": "application/json"
-      },
-      "unique_name": "webhook_0244TZE2EZFQX4GVXaqT9AXbgCDdGpEfWhz"
     }
   }
 }
